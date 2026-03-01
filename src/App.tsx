@@ -182,9 +182,20 @@ function SettingsModal({
 }
 
 export default function App() {
-  const [min, setMin] = useState(1);
-  const [max, setMax] = useState(30);
+  const [min, setMin] = useState(() => {
+    const saved = localStorage.getItem('picker_min');
+    return saved !== null ? parseInt(saved, 10) : 1;
+  });
+  const [max, setMax] = useState(() => {
+    const saved = localStorage.getItem('picker_max');
+    return saved !== null ? parseInt(saved, 10) : 30;
+  });
   const [availableNumbers, setAvailableNumbers] = useState<number[]>([]);
+
+  useEffect(() => {
+    localStorage.setItem('picker_min', min.toString());
+    localStorage.setItem('picker_max', max.toString());
+  }, [min, max]);
   const [pickedNumbers, setPickedNumbers] = useState<number[]>([]);
   const [currentNumber, setCurrentNumber] = useState<number | null>(null);
   const [isPicking, setIsPicking] = useState(false);
