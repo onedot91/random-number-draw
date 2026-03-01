@@ -1,0 +1,5 @@
+{
+  "name": "번호 뽑기",
+  "description": "A random number picker for classrooms with animations, sounds, and a secret rigging feature.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", "Inter", sans-serif;
+}
+
+body {
+  background-color: #FCFAF5;
+  background-image: radial-gradient(#E8DFD5 3px, transparent 3px);
+  background-size: 32px 32px;
+}
