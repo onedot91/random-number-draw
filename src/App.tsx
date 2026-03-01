@@ -78,8 +78,7 @@ const playSound = (type: 'tick' | 'pop') => {
 function SettingsModal({ 
   min, 
   max, 
-  setMin, 
-  setMax, 
+  onSave, 
   riggedNumbers, 
   setRiggedNumbers, 
   onClose 
@@ -89,8 +88,7 @@ function SettingsModal({
   const [secretClicks, setSecretClicks] = useState(0);
   
   const handleSave = () => {
-    setMin(tempMin);
-    setMax(tempMax);
+    onSave(tempMin, tempMax);
     onClose();
   };
   
@@ -190,13 +188,33 @@ export default function App() {
     const saved = localStorage.getItem('picker_max');
     return saved !== null ? parseInt(saved, 10) : 30;
   });
-  const [availableNumbers, setAvailableNumbers] = useState<number[]>([]);
+  const [availableNumbers, setAvailableNumbers] = useState<number[]>(() => {
+    const saved = localStorage.getItem('picker_available');
+    if (saved) return JSON.parse(saved);
+    const nums = [];
+    const savedMin = localStorage.getItem('picker_min');
+    const savedMax = localStorage.getItem('picker_max');
+    const initialMin = savedMin !== null ? parseInt(savedMin, 10) : 1;
+    const initialMax = savedMax !== null ? parseInt(savedMax, 10) : 30;
+    for (let i = initialMin; i <= initialMax; i++) nums.push(i);
+    return nums;
+  });
 
   useEffect(() => {
     localStorage.setItem('picker_min', min.toString());
     localStorage.setItem('picker_max', max.toString());
   }, [min, max]);
-  const [pickedNumbers, setPickedNumbers] = useState<number[]>([]);
+
+  const [pickedNumbers, setPickedNumbers] = useState<number[]>(() => {
+    const saved = localStorage.getItem('picker_picked');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('picker_available', JSON.stringify(availableNumbers));
+    localStorage.setItem('picker_picked', JSON.stringify(pickedNumbers));
+  }, [availableNumbers, pickedNumbers]);
+
   const [currentNumber, setCurrentNumber] = useState<number | null>(null);
   const [isPicking, setIsPicking] = useState(false);
   
@@ -216,12 +234,25 @@ export default function App() {
     setCurrentNumber(null);
   }, [min, max]);
 
-  useEffect(() => {
-    reset();
-  }, [reset]);
+  const handleSaveSettings = (newMin: number, newMax: number) => {
+    setMin(newMin);
+    setMax(newMax);
+    const nums = [];
+    for (let i = newMin; i <= newMax; i++) {
+      nums.push(i);
+    }
+    setAvailableNumbers(nums);
+    setPickedNumbers([]);
+    setCurrentNumber(null);
+  };
 
   const pickNumber = async () => {
     if (availableNumbers.length === 0 || isPicking) return;
+    
+    // Synchronously resume audio context on user interaction to bypass autoplay policy
+    if (soundEnabled) {
+      getAudioContext();
+    }
     
     setIsPicking(true);
     
@@ -403,8 +434,7 @@ export default function App() {
           <SettingsModal 
             min={min} 
             max={max} 
-            setMin={setMin} 
-            setMax={setMax} 
+            onSave={handleSaveSettings}
             riggedNumbers={riggedNumbers}
             setRiggedNumbers={setRiggedNumbers}
             onClose={() => setShowSettings(false)} 
