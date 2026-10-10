@@ -811,7 +811,7 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen gap-8 p-4 font-sans text-[#2C1E16] lg:flex lg:flex-row lg:p-8">
+    <div className="min-h-screen gap-8 p-4 font-sans text-[#2C1E16] lg:flex lg:h-screen lg:flex-row lg:overflow-hidden lg:p-6">
       <AnimatePresence>
         {clashAnimation && (
           <>
@@ -940,8 +940,8 @@ export default function App() {
         </button>
       </div>
 
-      <div className="relative flex min-h-[60vh] flex-1 flex-col items-center justify-center">
-        <div className="mb-8 mt-20 flex flex-wrap justify-center gap-3 lg:mt-0">
+      <div className="relative flex min-h-[60vh] min-w-0 flex-1 flex-col items-center justify-center lg:min-h-0">
+        <div className="mb-8 mt-20 flex flex-wrap justify-center gap-3 lg:mb-[2vh] lg:mt-0">
           {scenarios.map(scenario => {
             const isActive = scenario.id === activeScenario.id;
             return (
@@ -969,7 +969,7 @@ export default function App() {
               : { scale: 1, rotate: 0 }
           }
           transition={isPicking ? { repeat: Infinity, duration: 0.2 } : { duration: 0.2 }}
-          className="relative mb-16 flex h-72 w-72 items-center justify-center overflow-hidden rounded-full border-[16px] border-[#A67B5B] bg-white shadow-2xl md:h-[32rem] md:w-[32rem] md:border-[24px] lg:h-[40rem] lg:w-[40rem]"
+          className="relative mb-16 flex h-72 w-72 items-center justify-center overflow-hidden rounded-full border-[16px] border-[#A67B5B] bg-white shadow-2xl md:h-[32rem] md:w-[32rem] md:border-[24px] lg:mb-[3vh] lg:h-[min(40rem,calc(100vh-18rem))] lg:w-[min(40rem,calc(100vh-18rem))] lg:border-[min(24px,2vh)] [container-type:inline-size]"
         >
           <AnimatePresence mode="popLayout">
             {activeScenario.currentNumber !== null ? (
@@ -995,7 +995,7 @@ export default function App() {
                   ease: clashAnimation ? [0.18, 0.82, 0.26, 1] : isPicking ? 'linear' : 'easeOut',
                   times: clashAnimation ? [0, 0.34, 0.72, 1] : isPicking ? undefined : [0, 0.3, 0.55, 0.8, 1],
                 }}
-                className={`text-8xl font-black tracking-tighter drop-shadow-xl md:text-[16rem] lg:text-[20rem] ${
+                className={`text-8xl font-black tracking-tighter drop-shadow-xl md:text-[16rem] lg:text-[50cqw] lg:leading-none ${
                   isPicking ? 'text-[#A67B5B]/40' : clashAnimation ? 'text-[#C76D4B]' : 'text-[#5F8D4E]'
                 }`}
               >
@@ -1051,7 +1051,7 @@ export default function App() {
         </div>
       </div>
 
-      <div className="flex h-auto w-full flex-col rounded-[3rem] border-8 border-[#F3EFE0] bg-white p-8 shadow-xl lg:h-[calc(100vh-4rem)] lg:w-[400px] xl:w-[480px]">
+      <div className="flex h-auto w-full flex-col rounded-[3rem] border-8 border-[#F3EFE0] bg-white p-8 shadow-xl lg:h-[calc(100vh-3rem)] lg:w-[400px] xl:w-[480px]">
         <div className="mb-6 border-b-4 border-[#F3EFE0] pb-6 text-center">
           <h3 className="mb-2 text-lg font-black text-[#A67B5B]">{activeScenario.label.trim() || '이름 없는 상황'}</h3>
           <h2 className="mb-3 text-3xl font-black text-[#2C1E16]">뽑힌 번호</h2>
